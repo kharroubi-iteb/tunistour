@@ -1,0 +1,57 @@
+#!/usr/bin/env php
+<?php
+
+define('LARAVEL_START', microtime(true));
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| this application. We just need to utilize it! We'll simply require it
+| into the script here so we don't need to manually load our classes.
+|
+*/
+
+if (file_exists($a = __DIR__.'/vendor/autoload.php')) {
+    require $a;
+} else {
+    // If running composer install, the autoloader might be generated soon,
+    // so we attempt to locate it dynamically.
+    @include_once __DIR__.'/vendor/autoload.php';
+}
+
+/*
+|--------------------------------------------------------------------------
+| Run The Artisan Application
+|--------------------------------------------------------------------------
+|
+| When we run the console application, the current CLI request will be
+| executed through the kernel and the response will be sent back to the
+| terminal. We'll handle everything here or let Laravel do its magic!
+|
+*/
+
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+
+$status = $kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput,
+    new Symfony\Component\Console\Output\ConsoleOutput
+);
+
+/*
+|--------------------------------------------------------------------------
+| Shutdown The Application
+|--------------------------------------------------------------------------
+|
+| Once Artisan has finished running, we will write out the response and
+| terminate. This is the end of the line for this request!
+|
+*/
+
+$kernel->terminate($input, $status);
+
+exit($status);
